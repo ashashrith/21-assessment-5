@@ -31,9 +31,9 @@ class JobsRoute extends Component {
       },
       method: 'GET',
     }
-    const response = await fetch(url, options)
-    if (response.ok) {
-      const fetchedData = await response.json()
+    const repo = await fetch(url, options)
+    if (repo.ok) {
+      const fetchedData = await repo.json()
       const updatedData = fetchedData.jobs.map(each => ({
         companyLogoUrl: each.company_logo_url,
         employmentType: each.employment_type,
@@ -50,7 +50,7 @@ class JobsRoute extends Component {
         jobDetailsSuccess: true,
       })
     }
-    if (response.ok !== true) {
+    if (repo.ok !== true) {
       this.setState({jobDetailsSuccess: false, loadingJobs: false})
     }
   }
@@ -102,11 +102,12 @@ class JobsRoute extends Component {
     const response = await fetch(url, options)
     if (response.ok) {
       const data = await response.json()
-      const formattedData = data.map(eachProfile => ({
-        name: eachProfile.name,
-        profileImageUrl: eachProfile.profile_image_url,
-        shortBio: eachProfile.short_bio,
-      }))
+      console.log(data)
+      const formattedData = {
+        name: data.name,
+        profileImageUrl: data.profile_image_url,
+        shortBio: data.short_bio,
+      }
       this.setState({
         profileDetails: formattedData,
         isLoading: false,
@@ -130,7 +131,7 @@ class JobsRoute extends Component {
 
   renderProfile = () => {
     const {profileSuccess, profileDetails} = this.state
-
+    console.log(profileDetails)
     return (
       <>
         {profileSuccess ? (
@@ -159,8 +160,7 @@ class JobsRoute extends Component {
   }
 
   render() {
-    const {profileDetails, isLoading, loadingJobs} = this.state
-    console.log(profileDetails)
+    const {isLoading, loadingJobs} = this.state
 
     return (
       <>

@@ -56,6 +56,12 @@
   background-size: cover;
 }
 
+.pro-heading {
+  font-size: 18px;
+  color: #6366f1;
+  font-weight: 600;
+}
+
 .profile-fail {
   display: flex;
   flex-direction: column;
