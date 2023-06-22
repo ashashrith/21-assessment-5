@@ -102,7 +102,7 @@ class JobsRoute extends Component {
     const response = await fetch(url, options)
     if (response.ok) {
       const data = await response.json()
-      const formattedData = data.profile_details.map(eachProfile => ({
+      const formattedData = data.map(eachProfile => ({
         name: eachProfile.name,
         profileImageUrl: eachProfile.profile_image_url,
         shortBio: eachProfile.short_bio,
