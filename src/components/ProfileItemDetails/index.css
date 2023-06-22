@@ -1,0 +1,24 @@
+.profile.img {
+  height: 30px;
+  width: 30px;
+  background-size: cover;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 10px;
+}
+
+.pro-heading {
+  font-size: 18px;
+  color: #6366f1;
+  font-weight: 600;
+}
+
+.pro-bio {
+  font-size: 14px;
+  font-family: 'Roboto';
+  color: #2c364c;
+}

@@ -1,0 +1,25 @@
+.not-container {
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.not-img {
+  height: 60vh;
+  width: 60vh;
+  background-size: cover;
+}
+
+.not-head {
+  font-size: 20px;
+  font-weight: 600;
+  color: white;
+}
+
+.not-p {
+  font-size: 15px;
+  color: #f8fafc;
+  font-family: 'Roboto';
+}
