@@ -1,0 +1,167 @@
+.job-cont {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  width: 100%;
+}
+
+.fail-head {
+  font-size: 30px;
+  color: white;
+  font-weight: 700;
+}
+
+.fail-p {
+  color: white;
+  font-size: 12px;
+  font-family: 'Roboto';
+}
+
+.fail-btn {
+  background-color: #6366f1;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  border-width: 0px;
+  border-radius: 9px;
+  height: 30px;
+  width: 100px;
+}
+
+.job-item-cont {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 15px;
+  background-color: #2c364c;
+  height: auto;
+  width: 100%;
+}
+
+.item-cont {
+  background-color: black;
+  height: 90vh;
+  overflow: auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 22px;
+}
+
+.first {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.second {
+  display: flex;
+  flex-direction: column;
+  margin-left: 14px;
+  align-items: flex-start;
+}
+
+.com-logo {
+  height: 16vh;
+  width: 16vh;
+  background-size: cover;
+}
+
+.third {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fourth {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.location {
+  font-size: 14px;
+  color: white;
+  margin-right: 12px;
+}
+
+.salary {
+  font-size: 15px;
+  color: white;
+  font-weight: 600;
+}
+
+.line {
+  color: white;
+  width: 100%;
+}
+
+.fifth {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 12px;
+  margin-right: 12px;
+}
+
+.des {
+  font-size: 16px;
+  color: white;
+  font-weight: 600;
+}
+
+.visit {
+  font-size: 14px;
+  color: #6366f1;
+}
+
+.para {
+  font-size: 14px;
+  color: white;
+}
+
+.skill-cont {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  list-style: none;
+}
+
+.skill-item {
+  display: flex;
+  flex-direction: row;
+  margin-right: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+.skill-img {
+  height: 50px;
+  width: 50px;
+  background-size: cover;
+}
+
+.name {
+  font-size: 13px;
+  color: white;
+}
+
+.sixth {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.image {
+  height: 30vh;
+  width: 35vh;
+  background-size: cover;
+}

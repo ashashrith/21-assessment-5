@@ -1,9 +1,9 @@
 import {Component} from 'react'
+import {Link} from 'react-router-dom'
 import {BsSearch} from 'react-icons/bs'
 import Loader from 'react-loader-spinner'
 import Cookies from 'js-cookie'
 import Header from '../Header'
-import JobItemDetailsRoute from '../JobItemDetailsRoute'
 
 import './index.css'
 
@@ -15,6 +15,9 @@ class JobsRoute extends Component {
     jobsList: [],
     loadingJobs: true,
     jobDetailsSuccess: true,
+    employType: '',
+    salary: '',
+    searchInput: '',
   }
 
   componentDidMount() {
@@ -23,10 +26,11 @@ class JobsRoute extends Component {
   }
 
   getJobsList = async () => {
+    const {employType, salary, searchInput} = this.state
     const jwtToken = Cookies.get('jwt_token')
-    const url = 'https://apis.ccbp.in/jobs'
+    const url = `https://apis.ccbp.in/jobs?employment_type=${employType}&minimum_package=${salary}&search=${searchInput}`
     const options = {
-      header: {
+      headers: {
         Authorization: `Bearer ${jwtToken}`,
       },
       method: 'GET',
@@ -55,17 +59,63 @@ class JobsRoute extends Component {
     }
   }
 
+  renderJobs = () => {
+    const {jobsList} = this.state
+
+    if (jobsList.length <= 0) {
+      return (
+        <div className="job-cont">
+          <img
+            src="https://assets.ccbp.in/frontend/react-js/no-jobs-img.png"
+            alt="no jobs"
+          />
+          <h1 className="fail-head">No Jobs Found</h1>
+          <p className="fail-p">
+            We could not find any jobs. Try other filters.
+          </p>
+        </div>
+      )
+    }
+    return (
+      <ul className="job-list">
+        {jobsList.map(each => (
+          <li key={each.id} className="job-list-item">
+            <Link to={`/jobs/${each.id}`} className="link">
+              <div className="first">
+                <img
+                  src={each.companyLogoUrl}
+                  alt="company logo"
+                  className="com-img"
+                />
+                <div>
+                  <h1 className="title">{each.title}</h1>
+                  <p className="rating">{each.rating}</p>
+                </div>
+              </div>
+              <div className="second">
+                <div className="third">
+                  <p className="location">{each.location}</p>
+                  <p className="location">{each.employmentType}</p>
+                </div>
+                <p className="package">{each.packagePerAnnum}</p>
+              </div>
+              <hr className="hr-line" />
+              <h1 className="des">Description</h1>
+              <p className="para">{each.jobDescription}</p>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+
   renderJobsDetails = () => {
-    const {jobDetailsSuccess, jobsList} = this.state
+    const {jobDetailsSuccess} = this.state
 
     return (
       <>
         {jobDetailsSuccess ? (
-          <ul className="job-list">
-            {jobsList.map(each => (
-              <JobItemDetailsRoute job={each} key={each.id} />
-            ))}
-          </ul>
+          this.renderJobs()
         ) : (
           <div className="job-cont">
             <img
@@ -75,12 +125,12 @@ class JobsRoute extends Component {
             />
             <h1 className="fail-head">Oops! Something Went Wrong</h1>
             <p className="fail-p">
-              We cannot seem to find the page your looking for.
+              We cannot seem to find the page you are looking for
             </p>
             <button
               className="fail-btn"
               type="button"
-              onClick={this.failButton}
+              onClick={this.jobsFailButton}
             >
               Retry
             </button>
@@ -88,6 +138,11 @@ class JobsRoute extends Component {
         )}
       </>
     )
+  }
+
+  jobsFailButton = () => {
+    this.getJobsList()
+    this.setState({searchInput: '', employType: '', salary: ''})
   }
 
   getProfileDetails = async () => {
@@ -102,12 +157,12 @@ class JobsRoute extends Component {
     const response = await fetch(url, options)
     if (response.ok) {
       const data = await response.json()
-      console.log(data)
       const formattedData = {
-        name: data.name,
-        profileImageUrl: data.profile_image_url,
-        shortBio: data.short_bio,
+        name: data.profile_details.name,
+        profileImageUrl: data.profile_details.profile_image_url,
+        shortBio: data.profile_details.short_bio,
       }
+
       this.setState({
         profileDetails: formattedData,
         isLoading: false,
@@ -115,12 +170,12 @@ class JobsRoute extends Component {
       })
     }
     if (response.ok !== true) {
-      this.setState({profileSuccess: false, isLoading: true})
+      this.setState({profileSuccess: false, isLoading: false})
     }
   }
 
   onClickRetry = () => {
-    this.getJobsList()
+    this.getProfileDetails()
   }
 
   renderLoader = () => (
@@ -131,14 +186,14 @@ class JobsRoute extends Component {
 
   renderProfile = () => {
     const {profileSuccess, profileDetails} = this.state
-    console.log(profileDetails)
+
     return (
       <>
         {profileSuccess ? (
           <div className="profile-cont">
             <img
               src={profileDetails.profileImageUrl}
-              alt={profileDetails.name}
+              alt="profile"
               className="profile-img"
             />
             <h1 className="pro-heading">{profileDetails.name}</h1>
@@ -159,8 +214,33 @@ class JobsRoute extends Component {
     )
   }
 
+  onClickEmployFilter = event => {
+    this.setState(
+      prevState => ({
+        employType: prevState.employType + event.target.value,
+      }),
+      this.getJobsList,
+    )
+  }
+
+  onClickSalaryFilter = event => {
+    this.setState({salary: event.target.value}, this.getJobsList)
+  }
+
+  onClickSearchButton = () => {
+    const {searchInput, jobsList} = this.state
+    const filterSearchList = jobsList.filter(each =>
+      each.title.toLowerCase().includes(searchInput.toLowerCase()),
+    )
+    this.setState({jobsList: filterSearchList}, this.getJobsList)
+  }
+
+  onChangeSearchInput = event => {
+    this.setState({searchInput: event.target.value})
+  }
+
   render() {
-    const {isLoading, loadingJobs} = this.state
+    const {isLoading, loadingJobs, searchInput} = this.state
 
     return (
       <>
@@ -174,19 +254,47 @@ class JobsRoute extends Component {
             <ul className="type-employ">
               <h1 className="heading">Type of Employment</h1>
               <label htmlFor="full" className="label">
-                <input className="checkbox" id="full" type="checkbox" />
+                <input
+                  className="checkbox"
+                  id="full"
+                  type="checkbox"
+                  name="checkbox"
+                  value="FULLTIME"
+                  onClick={this.onClickEmployFilter}
+                />
                 Full Time
               </label>
               <label htmlFor="part" className="label">
-                <input className="checkbox" id="part" type="checkbox" />
+                <input
+                  className="checkbox"
+                  id="part"
+                  type="checkbox"
+                  name="checkbox"
+                  value="PARTTIME"
+                  onClick={this.onClickEmployFilter}
+                />
                 Part Time
               </label>
               <label htmlFor="free" className="label">
-                <input className="checkbox" id="free" type="checkbox" />
+                <input
+                  className="checkbox"
+                  id="free"
+                  type="checkbox"
+                  name="checkbox"
+                  value="FREELANCE"
+                  onClick={this.onClickEmployFilter}
+                />
                 Freelance
               </label>
               <label htmlFor="int" className="label">
-                <input className="checkbox" id="int" type="checkbox" />
+                <input
+                  className="checkbox"
+                  id="int"
+                  type="checkbox"
+                  name="checkbox"
+                  value="INTERNSHIP"
+                  onClick={this.onClickEmployFilter}
+                />
                 Internship
               </label>
             </ul>
@@ -194,30 +302,65 @@ class JobsRoute extends Component {
             <ul className="salary-cont">
               <h1 className="heading">Salary Range</h1>
               <label htmlFor="10" className="label">
-                <input className="checkbox" id="10" type="radio" />
+                <input
+                  className="checkbox"
+                  id="10"
+                  type="radio"
+                  name="salary"
+                  onClick={this.onClickSalaryFilter}
+                  value="1000000"
+                />
                 10 LPA and above
               </label>
               <label htmlFor="20" className="label">
-                <input className="checkbox" id="20" type="radio" />
+                <input
+                  className="checkbox"
+                  id="20"
+                  type="radio"
+                  name="salary"
+                  onClick={this.onClickSalaryFilter}
+                  value="2000000"
+                />
                 20 LPA and above
               </label>
               <label htmlFor="30" className="label">
-                <input className="checkbox" id="30" type="radio" />
+                <input
+                  className="checkbox"
+                  id="30"
+                  type="radio"
+                  name="salary"
+                  onClick={this.onClickSalaryFilter}
+                  value="3000000"
+                />
                 30 LPA and above
               </label>
               <label htmlFor="40" className="label">
-                <input className="checkbox" id="40" type="radio" />
+                <input
+                  className="checkbox"
+                  id="40"
+                  type="radio"
+                  name="salary"
+                  onClick={this.onClickSalaryFilter}
+                  value="4000000"
+                />
                 40 LPA and above
               </label>
             </ul>
           </div>
           <div className="search-container">
             <div className="search-cont">
-              <input type="search" className="search" placeholder="Search" />
+              <input
+                type="search"
+                className="search"
+                placeholder="Search"
+                value={searchInput}
+                onChange={this.onChangeSearchInput}
+              />
               <button
                 type="button"
                 data-testid="searchButton"
                 className="search-button"
+                onClick={this.onClickSearchButton}
               >
                 <BsSearch className="search-icon" />
               </button>
