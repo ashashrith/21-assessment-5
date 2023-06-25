@@ -9,12 +9,17 @@ const SimilarProducts = props => {
     employmentType,
     location,
     jobDescription,
+    id,
   } = item
 
   return (
-    <div className="pro-cont">
+    <li className="pro-cont" key={id}>
       <div className="first">
-        <img src={companyLogoUrl} alt="company logo" className="img" />
+        <img
+          src={companyLogoUrl}
+          alt="similar job company logo"
+          className="img"
+        />
         <h1 className="heading">{title}</h1>
         <p className="rating">{rating}</p>
       </div>
@@ -24,7 +29,7 @@ const SimilarProducts = props => {
         <p className="location">{location}</p>
         <p className="location">{employmentType}</p>
       </div>
-    </div>
+    </li>
   )
 }
 

@@ -1,12 +1,18 @@
 import {Component} from 'react'
-import {Loader} from 'react-loader-spinner'
+import Loader from 'react-loader-spinner'
 import Cookies from 'js-cookie'
 import Header from '../Header'
 import SimilarProduct from '../SimilarProducts'
 import './index.css'
 
 class JobItemDetailsRoute extends Component {
-  state = {isLoading: true, itemDetails: {}, similarList: [], pageErr: false}
+  state = {
+    isLoading: true,
+    itemDetails: {},
+    similarList: [],
+    pageErr: false,
+    skillsList: [],
+  }
 
   componentDidMount() {
     this.getJobItemDetails()
@@ -17,7 +23,6 @@ class JobItemDetailsRoute extends Component {
     const {params} = match
     const {id} = params
 
-    console.log(id)
     const jwtToken = Cookies.get('jwt_token')
     const url = `https://apis.ccbp.in/jobs/${id}`
     const options = {
@@ -26,9 +31,10 @@ class JobItemDetailsRoute extends Component {
     }
 
     const response = await fetch(url, options)
+
     if (response.ok) {
       const data = await response.json()
-      console.log(data)
+
       const updatedData = {
         companyLogoUrl: data.job_details.company_logo_url,
         companyWebsiteUrl: data.job_details.company_website_url,
@@ -40,9 +46,14 @@ class JobItemDetailsRoute extends Component {
         location: data.job_details.location,
         packagePerAnnum: data.job_details.package_per_annum,
         rating: data.job_details.rating,
-        skills: data.job_details.skills,
+        title: data.job_details.title,
       }
-      console.log(updatedData)
+
+      const skills = data.job_details.skills.map(eachSkill => ({
+        imageUrl: eachSkill.image_url,
+        name: eachSkill.name,
+      }))
+
       const similarProducts = data.similar_jobs.map(each => ({
         companyLogoUrl: each.company_logo_url,
         employmentType: each.employment_type,
@@ -57,6 +68,8 @@ class JobItemDetailsRoute extends Component {
         itemDetails: updatedData,
         similarList: similarProducts,
         isLoading: false,
+        pageErr: false,
+        skillsList: skills,
       })
     }
     if (response.ok !== true) {
@@ -65,17 +78,17 @@ class JobItemDetailsRoute extends Component {
   }
 
   renderItemDetails = () => {
-    const {pageErr, itemDetails, similarList} = this.state
+    const {pageErr, itemDetails, similarList, skillsList} = this.state
 
     return (
       <>
-        {pageErr ? (
+        {!pageErr ? (
           <div className="final">
             <div className="job-item-cont">
               <div className="first">
                 <img
                   src={itemDetails.companyLogoUrl}
-                  alt="company logo"
+                  alt="job details company logo"
                   className="com-logo"
                 />
                 <div className="second">
@@ -93,15 +106,17 @@ class JobItemDetailsRoute extends Component {
               <hr className="line" />
               <div className="fifth">
                 <h1 className="des">Description</h1>
-                <p className="visit">Visit</p>
+                <a href={itemDetails.companyWebsiteUrl} className="visit">
+                  Visit
+                </a>
               </div>
               <p className="para">{itemDetails.jobDescription}</p>
               <h1 className="des">Skills</h1>
               <ul className="skill-cont">
-                {itemDetails.skills.map(each => (
+                {skillsList.map(each => (
                   <li className="skill-item">
                     <img
-                      src={each.image_url}
+                      src={each.imageUrl}
                       alt={each.name}
                       className="skill-img"
                     />
@@ -114,15 +129,17 @@ class JobItemDetailsRoute extends Component {
                 <p className="para">{itemDetails.lifeAtCompanyDescription}</p>
                 <img
                   src={itemDetails.lifeAtCompanyImage}
-                  alt="company"
+                  alt="life at company"
                   className="image"
                 />
               </div>
             </div>
-            <h1 className="des">Similar Products</h1>
-            {similarList.map(each => (
-              <SimilarProduct item={each} key={each.id} />
-            ))}
+            <h1 className="des">Similar Jobs</h1>
+            <ul className="sim-list-cont">
+              {similarList.map(each => (
+                <SimilarProduct item={each} key={each.id} />
+              ))}
+            </ul>
           </div>
         ) : (
           <div className="job-cont">

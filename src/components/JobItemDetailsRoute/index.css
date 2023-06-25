@@ -118,8 +118,10 @@
 }
 
 .visit {
-  font-size: 14px;
+  font-size: 16px;
   color: #6366f1;
+  text-decoration: none;
+  margin-left: 20px;
 }
 
 .para {
@@ -164,4 +166,12 @@
   height: 30vh;
   width: 35vh;
   background-size: cover;
+}
+
+.sim-list-cont {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
 }

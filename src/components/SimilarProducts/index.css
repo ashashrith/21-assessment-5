@@ -6,6 +6,8 @@
   width: 50vh;
   height: auto;
   background-color: #2c364c;
+  margin: 10px;
+  flex-shrink: 0;
 }
 
 .first {
@@ -19,6 +21,7 @@
   height: 15vh;
   width: 15vh;
   background-size: cover;
+  margin-right: 14px;
 }
 
 .heading {
